@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>College Placement Management Dashboard</title>
     <style>
+        /* Your existing CSS code stays the same */
         :root {
             --primary-color: #3c8dbc;
             --secondary-color: #f39c12;
@@ -386,8 +387,8 @@
         </div>
         <div class="user-controls">
             <div class="user-info">
-                <div>Welcome, Dr. Johnson</div>
-                <small>Placement Director</small>
+                <div id="username">Welcome, Dr. Johnson</div>
+                <small id="userRole">Placement Director</small>
             </div>
             <button class="logout-btn" id="logoutBtn">Logout</button>
         </div>
@@ -413,8 +414,8 @@
             <div class="dashboard-header">
                 <h2>Placement Overview Dashboard</h2>
                 <div class="dashboard-actions">
-                    <button>Export Data</button>
-                    <button>Print Report</button>
+                    <button id="exportBtn">Export Data</button>
+                    <button id="printBtn">Print Report</button>
                 </div>
             </div>
             
@@ -422,7 +423,7 @@
                 <div class="card recruitment-card">
                     <h3>Active Recruitments</h3>
                     <div class="card-content">
-                        <div class="card-value">12</div>
+                        <div class="card-value" id="activeRecruitments">12</div>
                         <div class="card-icon">📝</div>
                     </div>
                     <p>Ongoing recruitment drives</p>
@@ -430,7 +431,7 @@
                 <div class="card placement-card">
                     <h3>Placement Rate</h3>
                     <div class="card-content">
-                        <div class="card-value">78%</div>
+                        <div class="card-value" id="placementRate">78%</div>
                         <div class="card-icon">📈</div>
                     </div>
                     <p>Students placed this year</p>
@@ -438,7 +439,7 @@
                 <div class="card student-card">
                     <h3>Eligible Students</h3>
                     <div class="card-content">
-                        <div class="card-value">324</div>
+                        <div class="card-value" id="eligibleStudents">324</div>
                         <div class="card-icon">👥</div>
                     </div>
                     <p>Students eligible for placement</p>
@@ -446,7 +447,7 @@
                 <div class="card company-card">
                     <h3>Partner Companies</h3>
                     <div class="card-content">
-                        <div class="card-value">56</div>
+                        <div class="card-value" id="partnerCompanies">56</div>
                         <div class="card-icon">🏢</div>
                     </div>
                     <p>Companies registered this year</p>
@@ -458,7 +459,7 @@
                     <div class="chart-header">
                         <h3>Placement Trends</h3>
                         <div class="chart-filters">
-                            <select>
+                            <select id="placementTrendFilter">
                                 <option>Last 6 Months</option>
                                 <option>Last Year</option>
                                 <option>Last 3 Years</option>
@@ -466,7 +467,7 @@
                         </div>
                     </div>
                     <div style="text-align: center; padding: 40px;">
-                        <img src="/api/placeholder/500/200" alt="Placement Trends Chart">
+                        <img src="https://via.placeholder.com/500x200" alt="Placement Trends Chart">
                         <p style="margin-top: 10px; color: #666;">Placement statistics by department and time period</p>
                     </div>
                 </div>
@@ -474,7 +475,7 @@
                     <div class="chart-header">
                         <h3>Salary Distribution</h3>
                         <div class="chart-filters">
-                            <select>
+                            <select id="salaryDistributionFilter">
                                 <option>All Departments</option>
                                 <option>Computer Science</option>
                                 <option>Electrical Engineering</option>
@@ -483,7 +484,7 @@
                         </div>
                     </div>
                     <div style="text-align: center; padding: 40px;">
-                        <img src="/api/placeholder/500/200" alt="Salary Distribution Chart">
+                        <img src="https://via.placeholder.com/500x200" alt="Salary Distribution Chart">
                         <p style="margin-top: 10px; color: #666;">Salary packages offered across departments</p>
                     </div>
                 </div>
@@ -494,11 +495,11 @@
                     <div class="data-header">
                         <h3>Upcoming Recruitment Drives</h3>
                         <div class="data-search">
-                            <input type="text" placeholder="Search companies...">
-                            <button>Search</button>
+                            <input type="text" id="driveSearch" placeholder="Search companies...">
+                            <button id="driveSearchBtn">Search</button>
                         </div>
                     </div>
-                    <table>
+                    <table id="drivesTable">
                         <thead>
                             <tr>
                                 <th>Company</th>
@@ -509,7 +510,7 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="drivesTableBody">
                             <tr>
                                 <td>Accenture</td>
                                 <td>Software Engineer</td>
@@ -517,8 +518,8 @@
                                 <td>CS, IT (7.5+ CGPA)</td>
                                 <td><span class="status-badge status-active">Active</span></td>
                                 <td class="action-btns">
-                                    <button>View</button>
-                                    <button>Edit</button>
+                                    <button onclick="viewDrive(1)">View</button>
+                                    <button onclick="editDrive(1)">Edit</button>
                                 </td>
                             </tr>
                             <tr>
@@ -528,39 +529,26 @@
                                 <td>CS, IT, Math (7.0+ CGPA)</td>
                                 <td><span class="status-badge status-pending">Pending</span></td>
                                 <td class="action-btns">
-                                    <button>View</button>
-                                    <button>Edit</button>
+                                    <button onclick="viewDrive(2)">View</button>
+                                    <button onclick="editDrive(2)">Edit</button>
                                 </td>
                             </tr>
                             <tr>
                                 <td>TCS</td>
-                                <td>Systems Engineer</td>
-                                <td>May 3, 2025</td>
+                                <td>System Engineer</td>
+                                <td>May 2, 2025</td>
                                 <td>All Engineering (6.5+ CGPA)</td>
                                 <td><span class="status-badge status-active">Active</span></td>
                                 <td class="action-btns">
-                                    <button>View</button>
-                                    <button>Edit</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Goldman Sachs</td>
-                                <td>Financial Analyst</td>
-                                <td>May 10, 2025</td>
-                                <td>CS, Finance (8.0+ CGPA)</td>
-                                <td><span class="status-badge status-pending">Pending</span></td>
-                                <td class="action-btns">
-                                    <button>View</button>
-                                    <button>Edit</button>
+                                    <button onclick="viewDrive(3)">View</button>
+                                    <button onclick="editDrive(3)">Edit</button>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
-                    <div class="pagination">
+                    <div class="pagination" id="drivesPagination">
                         <button>Previous</button>
                         <button class="active">1</button>
-                        <button>2</button>
-                        <button>3</button>
                         <button>Next</button>
                     </div>
                 </div>
@@ -569,11 +557,11 @@
                     <div class="data-header">
                         <h3>Recent Placements</h3>
                         <div class="data-search">
-                            <input type="text" placeholder="Search students...">
-                            <button>Search</button>
+                            <input type="text" id="placementSearch" placeholder="Search students...">
+                            <button id="placementSearchBtn">Search</button>
                         </div>
                     </div>
-                    <table>
+                    <table id="placementsTable">
                         <thead>
                             <tr>
                                 <th>Student Name</th>
@@ -584,7 +572,7 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="placementsTableBody">
                             <tr>
                                 <td>Aisha Patel</td>
                                 <td>Computer Science</td>
@@ -592,7 +580,7 @@
                                 <td>Software Developer</td>
                                 <td>18.5</td>
                                 <td class="action-btns">
-                                    <button>View</button>
+                                    <button onclick="viewPlacement('p1')">View</button>
                                 </td>
                             </tr>
                             <tr>
@@ -602,36 +590,24 @@
                                 <td>Hardware Engineer</td>
                                 <td>12.2</td>
                                 <td class="action-btns">
-                                    <button>View</button>
+                                    <button onclick="viewPlacement('p2')">View</button>
                                 </td>
                             </tr>
                             <tr>
-                                <td>Lisa Chen</td>
+                                <td>Priya Singh</td>
                                 <td>Computer Science</td>
-                                <td>Amazon</td>
-                                <td>SDE-1</td>
+                                <td>Google</td>
+                                <td>Frontend Developer</td>
                                 <td>22.0</td>
                                 <td class="action-btns">
-                                    <button>View</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Michael Rodriguez</td>
-                                <td>Mechanical Engineering</td>
-                                <td>Tesla</td>
-                                <td>Design Engineer</td>
-                                <td>15.8</td>
-                                <td class="action-btns">
-                                    <button>View</button>
+                                    <button onclick="viewPlacement('p3')">View</button>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
-                    <div class="pagination">
+                    <div class="pagination" id="placementsPagination">
                         <button>Previous</button>
                         <button class="active">1</button>
-                        <button>2</button>
-                        <button>3</button>
                         <button>Next</button>
                     </div>
                 </div>
@@ -640,32 +616,80 @@
     </div>
     
     <script>
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-            // Redirect to login page
-            window.location.href = '/';
-        });
-        
-        // Simplified mock data for demonstration
-        const mockCompanies = [
-            { id: 1, name: 'Accenture', positions: 'Software Engineer', date: 'Apr 25, 2025', eligibility: 'CS, IT (7.5+ CGPA)', status: 'Active' },
-            { id: 2, name: 'IBM', positions: 'Data Analyst', date: 'Apr 28, 2025', eligibility: 'CS, IT, Math (7.0+ CGPA)', status: 'Pending' },
-            { id: 3, name: 'TCS', positions: 'Systems Engineer', date: 'May 3, 2025', eligibility: 'All Engineering (6.5+ CGPA)', status: 'Active' }
-        ];
-        
-        const mockPlacements = [
-            { id: 1, student: 'Aisha Patel', department: 'Computer Science', company: 'Microsoft', position: 'Software Developer', package: '18.5' },
-            { id: 2, student: 'Raj Kumar', department: 'Electrical Engineering', company: 'Samsung', position: 'Hardware Engineer', package: '12.2' },
-            { id: 3, student: 'Lisa Chen', department: 'Computer Science', company: 'Amazon', position: 'SDE-1', package: '22.0' }
-        ];
-        
-        // This would be replaced with actual chart implementation using a library like Chart.js
-        function renderCharts() {
-            console.log("Charts would be rendered here using real data");
-        }
-        
-        // Initialize dashboard
+        // Mock data for our application
+        const mockData = {
+            user: {
+                name: 'Dr. Johnson',
+                role: 'Placement Director'
+            },
+            dashboard: {
+                activeRecruitments: 12,
+                placementRate: '78%',
+                eligibleStudents: 324,
+                partnerCompanies: 56
+            },
+            drives: [
+                {
+                    id: 1,
+                    company: 'Accenture',
+                    title: 'Software Engineer',
+                    date: 'Apr 25, 2025',
+                    eligibility: 'CS, IT (7.5+ CGPA)',
+                    status: 'Active'
+                },
+                {
+                    id: 2,
+                    company: 'IBM',
+                    title: 'Data Analyst',
+                    date: 'Apr 28, 2025',
+                    eligibility: 'CS, IT, Math (7.0+ CGPA)',
+                    status: 'Pending'
+                },
+                {
+                    id: 3,
+                    company: 'TCS',
+                    title: 'System Engineer',
+                    date: 'May 2, 2025',
+                    eligibility: 'All Engineering (6.5+ CGPA)',
+                    status: 'Active'
+                }
+            ],
+            placements: [
+                {
+                    id: 'p1',
+                    student: 'Aisha Patel',
+                    department: 'Computer Science',
+                    company: 'Microsoft',
+                    position: 'Software Developer',
+                    package: '18.5'
+                },
+                {
+                    id: 'p2',
+                    student: 'Raj Kumar',
+                    department: 'Electrical Engineering',
+                    company: 'Samsung',
+                    position: 'Hardware Engineer',
+                    package: '12.2'
+                },
+                {
+                    id: 'p3',
+                    student: 'Priya Singh',
+                    department: 'Computer Science',
+                    company: 'Google',
+                    position: 'Frontend Developer',
+                    package: '22.0'
+                }
+            ]
+        };
+
+        // Event listeners and functions when page loads
         document.addEventListener('DOMContentLoaded', () => {
-            renderCharts();
+            // Set up event listeners
+            document.getElementById('logoutBtn').addEventListener('click', logout);
+            document.getElementById('exportBtn').addEventListener('click', exportData);
+            document.getElementById('printBtn').addEventListener('click', printReport);
+            document.getElementById('driveSearchBtn').addEventListener('click', () => searchDrives(document.getElementById('driveSearch').value));
+            document.getElementById('placementSearchBtn').addEventListener('click', () => searchPlacements(document.getElementById('placementSearch').value));
             
             // Event listeners for sidebar navigation
             document.querySelectorAll('.sidebar-menu a').forEach(link => {
@@ -676,7 +700,105 @@
                     // In a real app, this would navigate to different sections
                 });
             });
+            
+            // Event listeners for chart filters
+            document.getElementById('placementTrendFilter').addEventListener('change', updatePlacementTrends);
+            document.getElementById('salaryDistributionFilter').addEventListener('change', updateSalaryDistribution);
         });
+        
+        // Update placement trends chart
+        function updatePlacementTrends() {
+            const filter = document.getElementById('placementTrendFilter').value;
+            console.log('Updating placement trends with filter:', filter);
+            // This would update the chart based on the filter
+        }
+        
+        // Update salary distribution chart
+        function updateSalaryDistribution() {
+            const filter = document.getElementById('salaryDistributionFilter').value;
+            console.log('Updating salary distribution with filter:', filter);
+            // This would update the chart based on the filter
+        }
+        
+        // Search functions
+        function searchDrives(query) {
+            console.log('Searching drives for:', query);
+            if (!query) return;
+            
+            const tableBody = document.getElementById('drivesTableBody');
+            const rows = tableBody.querySelectorAll('tr');
+            
+            rows.forEach(row => {
+                const companyName = row.cells[0].textContent.toLowerCase();
+                const position = row.cells[1].textContent.toLowerCase();
+                const queryLower = query.toLowerCase();
+                
+                if (companyName.includes(queryLower) || position.includes(queryLower)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+        
+        function searchPlacements(query) {
+            console.log('Searching placements for:', query);
+            if (!query) return;
+            
+            const tableBody = document.getElementById('placementsTableBody');
+            const rows = tableBody.querySelectorAll('tr');
+            
+            rows.forEach(row => {
+                const studentName = row.cells[0].textContent.toLowerCase();
+                const company = row.cells[2].textContent.toLowerCase();
+                const queryLower = query.toLowerCase();
+                
+                if (studentName.includes(queryLower) || company.includes(queryLower)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+        
+        // View and edit functions
+        function viewDrive(id) {
+            console.log('Viewing drive:', id);
+            alert(`Viewing details for drive ID: ${id}`);
+            // This would open a modal or navigate to a detailed view of the drive
+        }
+        
+        function editDrive(id) {
+            console.log('Editing drive:', id);
+            alert(`Editing drive ID: ${id}`);
+            // This would open a form to edit the drive details
+        }
+        
+        function viewPlacement(id) {
+            console.log('Viewing placement:', id);
+            alert(`Viewing details for placement ID: ${id}`);
+            // This would open a modal or navigate to a detailed view of the placement
+        }
+        
+        // Export data function
+        function exportData() {
+            console.log('Exporting dashboard data');
+            alert('Exporting data... In a real application, this would download a CSV or Excel file.');
+        }
+        
+        // Print report function
+        function printReport() {
+            console.log('Printing dashboard report');
+            window.print();
+        }
+        
+        // Logout function
+        function logout() {
+            console.log('Logging out');
+            alert('Logging out... In a real application, this would redirect to the login page.');
+            // In a real application, this would redirect to the login page
+            // window.location.href = '/login';
+        }
     </script>
 </body>
 </html>
