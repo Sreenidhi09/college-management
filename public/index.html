@@ -126,28 +126,63 @@
         });
 
         // Form submission handler
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            
-            // Demo credentials for testing without backend
-            if ((currentRole === 'student' && username === 'student1' && password === 'student123') ||
-                (currentRole === 'admin' && username === 'admin1' && password === 'admin123') ||
-                (currentRole === 'placement' && username === 'placement1' && password === 'placement123')) {
-                
-                // Show success message
-                showMessage('Login successful. Redirecting...', 'success');
-                
-                // Redirect based on role (with a slight delay for the user to see the success message)
-                setTimeout(() => {
-                    // Redirect to the respective dashboard
-                    window.location.href = `/${currentRole}/dashboard.html`;
-                }, 1000);
-            } else {
-                showMessage('Invalid username or password', 'error');
-            }
-            
+loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    
+    // Validate username format (must be something@cvr.ac.in)
+    const cvrUsernameRegex = /^[a-zA-Z0-9._%+-]*cvr@ac\.in$/;
+    if (!cvrUsernameRegex.test(username)) {
+        showMessage('Username must be in the format: something cvr@ac.in', 'error');
+        return;
+    }
+    
+    // Demo credentials for testing without backend
+    // Updated credentials to match the cvr@ac.in format
+    if ((currentRole === 'student' && username === 'amruthacvr@ac.in' && password === 'student123') ||
+        (currentRole === 'admin' && username === 'admin1cvr@ac.in' && password === 'admin123') ||
+        (currentRole === 'placement' && username === 'placement1cvr@ac.in' && password === 'placement123')) {
+        
+        // Show success message
+        showMessage('Login successful. Redirecting...', 'success');
+        
+        // Redirect based on role (with a slight delay for the user to see the success message)
+        setTimeout(() => {
+            // Redirect to the respective dashboard
+            window.location.href = `/${currentRole}/dashboard.html`;
+        }, 1000);
+    } else {
+        showMessage('Invalid username or password', 'error');
+    }
+    
+    /* 
+    // For when you have a real backend server:
+    
+    fetch('/api/auth', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, password, role: currentRole })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showMessage('Login successful. Redirecting...', 'success');
+            setTimeout(() => {
+                window.location.href = data.redirect || `/${currentRole}/dashboard.html`;
+            }, 1000);
+        } else {
+            showMessage(data.message || 'Invalid username or password', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Login error:', error);
+        showMessage('An error occurred. Please try again.', 'error');
+    });
+    */
+});
             /* 
             // For when you have a real backend server:
             
@@ -174,7 +209,6 @@
                 showMessage('An error occurred. Please try again.', 'error');
             });
             */
-        });
         
         // Helper function to show messages
         function showMessage(text, type) {

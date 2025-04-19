@@ -19,18 +19,116 @@ app.use(session({
 }));
 
 // Database simulation (in a real app, use MongoDB, MySQL, etc.)
+// Your existing users data structure
 const users = {
     student: [
-        { id: 1, username: 'student1', password: '$2b$10$XWpXCLO8u5Ep4pZq1Xtfkug1h71xFHO/JMeMatKk.5oPdVZ7.Xhd2', name: 'John Smith' }, // password: student123
-        { id: 2, username: 'student2', password: '$2b$10$XWpXCLO8u5Ep4pZq1Xtfkug1h71xFHO/JMeMatKk.5oPdVZ7.Xhd2', name: 'Jane Student' }  // password: student123
+        { id: 1, username: 'amruthacvr@ac.in', password: '$2b$10$XWpXCLO8u5Ep4pZq1Xtfkug1h71xFHO/JMeMatKk.5oPdVZ7.Xhd2', name: 'John Smith' }, // password: student123
+        { id: 2, username: 'student2cvr@ac.in', password: '$2b$10$XWpXCLO8u5Ep4pZq1Xtfkug1h71xFHO/JMeMatKk.5oPdVZ7.Xhd2', name: 'Jane Student' }  // password: student123
     ],
     admin: [
-        { id: 1, username: 'admin1', password: '$2b$10$4JVzMvvr5yCUJNoTT1CIGepXKxZ1FpW6y4L3N6oXNm2OVPrfBTGTK', name: 'Admin User' } // password: admin123
+        { id: 1, username: 'admin1cvr@ac.in', password: '$2b$10$4JVzMvvr5yCUJNoTT1CIGepXKxZ1FpW6y4L3N6oXNm2OVPrfBTGTK', name: 'Admin User' } // password: admin123
     ],
     placement: [
-        { id: 1, username: 'placement1', password: '$2b$10$oM2T1E4RUPeUkqhdXo.z7O94JJgvIJDkH6kI7VZLixTk841L/V0.i', name: 'Dr. Johnson' } // password: placement123
+        { id: 1, username: 'placement1cvr@ac.in', password: '$2b$10$oM2T1E4RUPeUkqhdXo.z7O94JJgvIJDkH6kI7VZLixTk841L/V0.i', name: 'Dr. Johnson' } // password: placement123
     ]
 };
+
+// Function to validate username is in the cvr.ac.in format
+const validateCVRUsername = (username) => {
+    // Regular expression that only accepts usernames ending with @cvr.ac.in
+    const cvrUsernameRegex = /^[a-zA-Z0-9._%+-]*cvr@ac\.in$/;
+    return cvrUsernameRegex.test(username);
+};
+
+// Function to register a new user
+const registerUser = (username, password, name, role) => {
+    // Validate the username format
+    if (!validateCVRUsername(username)) {
+        return { 
+            success: false, 
+            message: 'Invalid username format. Username must be in the format: something cvr@ac.in' 
+        };
+    }
+    
+    // Check if user already exists
+    for (const userRole in users) {
+        const existingUser = users[userRole].find(user => user.username === username);
+        if (existingUser) {
+            return { success: false, message: 'Username already exists' };
+        }
+    }
+    
+    // Create new user
+    const newUser = {
+        id: users[role].length + 1,
+        username: username,
+        password: password, // Should be hashed in production
+        name: name
+    };
+    
+    // Add user to appropriate role array
+    if (!users[role]) {
+        return { success: false, message: 'Invalid role' };
+    }
+    
+    users[role].push(newUser);
+    return { success: true, message: 'User registered successfully' };
+};
+
+// Function to authenticate a user
+const loginUser = (username, password) => {
+    // Validate the username format
+    if (!validateCVRUsername(username)) {
+        return { 
+            success: false, 
+            message: 'Invalid username format. Username must be in the format: something@cvr.ac.in' 
+        };
+    }
+    
+    // Check for user in all role categories
+    let foundUser = null;
+    let userRole = null;
+    
+    for (const role in users) {
+        const user = users[role].find(u => u.username === username);
+        if (user) {
+            foundUser = user;
+            userRole = role;
+            break;
+        }
+    }
+    
+    if (!foundUser) {
+        return { success: false, message: 'User not found' };
+    }
+    
+    // Check password (in a real app, you would compare hashed passwords)
+    if (foundUser.password !== password) {
+        return { success: false, message: 'Invalid password' };
+    }
+    
+    return { 
+        success: true, 
+        message: 'Login successful', 
+        user: foundUser,
+        role: userRole
+    };
+};
+
+// Example usage:
+// const result = registerUser('newstudent@cvr.ac.in', 'password123', 'New Student', 'student');
+// console.log(result);
+
+// const loginResult = loginUser('student1@cvr.ac.in', 'student123');
+// console.log(loginResult);
+// Example usage:
+// To register a new student
+// const result = registerUser('newstudent@cvr.ac.in', 'password123', 'New Student', 'student');
+// console.log(result);
+
+// To login with CVR email
+// const loginResult = loginUser('student1@cvr.ac.in', 'student123');
+// console.log(loginResult);
 
 // Mock data for student dashboard
 const studentData = {
